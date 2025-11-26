@@ -40,15 +40,17 @@ const EditProduct = () => {
 
     try {
       const fd = new FormData();
-      fd.append("name", name);
-      fd.append("price", price);
-      fd.append("category", category);
+      fd.append("name", name.trim());
+      fd.append("price", Number(price));
+      fd.append("category", category.trim());
       if (image) fd.append("image", image);
+
+      for (let pair of fd.entries()) console.log(pair[0], pair[1]);
 
       await API.put(`/products/${id}`, fd, {
         headers: {
+          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
-          "x-auth-token": token,
         },
       });
 
@@ -60,7 +62,7 @@ const EditProduct = () => {
         alert("Unauthorized. Please log in again.");
         navigate("/login");
       } else {
-        alert("Update failed. Please try again.");
+        alert("Update failed. Please check input and try again.");
       }
     }
   };
@@ -80,6 +82,7 @@ const EditProduct = () => {
           placeholder="Product Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          required
         />
 
         <input
@@ -88,6 +91,7 @@ const EditProduct = () => {
           type="number"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
+          required
         />
 
         <input
@@ -95,6 +99,7 @@ const EditProduct = () => {
           placeholder="Category"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
+          required
         />
 
         <input type="file" onChange={(e) => setImage(e.target.files[0])} className="mb-3" />
