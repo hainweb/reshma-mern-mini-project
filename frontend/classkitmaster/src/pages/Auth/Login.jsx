@@ -1,35 +1,38 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useAdmin } from "../../components/context/AdminContext";
 import { useNavigate } from "react-router-dom";
-import API from "../../services/api";
-import AdminDashboard from "../Admin/AdminDashboard";
+import { toast } from "react-hot-toast";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { login } = useAdmin();
   const navigate = useNavigate();
+  const [form, setForm] = useState({ email: "", password: "" });
 
-  const submit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const res = await API.post("/auth/login", { email, password });
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.user.role);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+    const res = await login(form.email, form.password);
 
-      if (res.data.user.role === "admin") navigate("/admin");
-else navigate("/");
-
-    } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+    if (res.success) {
+      toast.success("Admin Logged In");
+      navigate("/admin");
+    } else {
+      toast.error(res.message);
     }
   };
 
   return (
-    <form onSubmit={submit} className="max-w-md mx-auto mt-8 bg-white p-6 rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Admin Login</h2>
-      <input className="border p-2 rounded w-full mb-3" placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} />
-      <input className="border p-2 rounded w-full mb-3" placeholder="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
-      <button className="bg-blue-600 text-white px-4 py-2 rounded w-full">Login</button>
+    <form onSubmit={handleSubmit}>
+      <input
+        type="email"
+        placeholder="Admin Email"
+        onChange={(e) => setForm({ ...form, email: e.target.value })}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        onChange={(e) => setForm({ ...form, password: e.target.value })}
+      />
+      <button type="submit">Login</button>
     </form>
   );
 };
