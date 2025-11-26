@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import API from "../../services/api";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 const ProductsPage = () => {
@@ -11,22 +11,27 @@ const ProductsPage = () => {
   const PER_PAGE = 6;
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await API.get("/products");
-        setProducts(res.data);
-      } catch (err) { console.error(err); }
-    };
-    load();
-  }, []);
+  const load = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/products");
+      console.log("API Response:", res.data);
+      setProducts(res.data.items || []);  // ← use items array
+    } catch (err) {
+      console.log("Axios Error:", err);
+      setProducts([]);
+    }
+  };
+  load();
+}, []);
 
-let filtered = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
-if (category) filtered = filtered.filter(p => p.category === category);
-if (sort === "low") filtered.sort((a,b)=>a.price-b.price);
-if (sort === "high") filtered.sort((a,b)=>b.price-a.price);
 
-const totalPages = Math.ceil(filtered.length / PER_PAGE);
-const displayed = filtered.slice((page-1)*PER_PAGE, page*PER_PAGE);
+  let filtered = Array.isArray(products) ? products.filter(p => p.name.toLowerCase().includes(search.toLowerCase())) : [];
+  if (category) filtered = filtered.filter(p => p.category === category);
+  if (sort === "low") filtered.sort((a,b)=>a.price-b.price);
+  if (sort === "high") filtered.sort((a,b)=>b.price-a.price);
+
+  const totalPages = Math.ceil(filtered.length / PER_PAGE);
+  const displayed = filtered.slice((page-1)*PER_PAGE, page*PER_PAGE);
 
   return (
     <div>
@@ -34,10 +39,6 @@ const displayed = filtered.slice((page-1)*PER_PAGE, page*PER_PAGE);
         <input className="border p-2 rounded flex-1" placeholder="Search..." value={search} onChange={e=>setSearch(e.target.value)} />
         <select className="border p-2 rounded" value={category} onChange={e=>setCategory(e.target.value)}>
           <option value="">All Categories</option>
-          <option value="bag">Bag</option>
-          <option value="bag">Bottle</option>
-          <option value="bag">Cryons</option>
-          <option value="bag">Toys</option>
           {[...new Set(products.map(p=>p.category))].map(c=> <option key={c} value={c}>{c}</option>)}
         </select>
         <select className="border p-2 rounded" value={sort} onChange={e=>setSort(e.target.value)}>

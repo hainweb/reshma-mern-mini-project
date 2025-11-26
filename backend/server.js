@@ -1,58 +1,23 @@
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const connectDB = require("./config/db");
-
-dotenv.config();
-connectDB();
-
-const productRoutes = require("./routes/productRoutes");
-const authRoutes = require("./routes/authRoutes");
-const cartRoutes = require("./routes/cartRoutes");
-
+require('dotenv').config();
+const express = require('express');
 const app = express();
+const connectDB = require('./config/db');
+const cors = require('cors');
+const morgan = require('morgan');
+const path = require('path');
 
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(morgan('dev'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// routes
-app.use("/api/products", productRoutes);
-app.use("/api/cart", cartRoutes);
-app.use("/api/auth", authRoutes); // 🔹 this line must exist
-app.use("/uploads", express.static("uploads"));
 
-app.get("/", (req, res) => res.send("API Running"));
+connectDB(process.env.MONGO_URI).catch(err => { console.error(err); process.exit(1); });
 
-// app.post("/api/auth/admin/login", async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
 
-//     const user = await User.findOne({ email });
-
-//     if (!user) return res.status(404).json({ message: "Admin not found" });
-
-//     if (user.role !== "admin")
-//       return res.status(403).json({ message: "Not an admin" });
-
-//     const isMatch = await bcrypt.compare(password, user.password);
-
-//     if (!isMatch)
-//       return res.status(400).json({ message: "Invalid credentials" });
-
-//     const token = jwt.sign(
-//       { id: user._id, role: "admin" },
-//       process.env.JWT_SECRET,
-//       { expiresIn: "7d" }
-//     );
-
-//     res.json({ message: "Admin login success", token });
-
-//   } catch (error) {
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
-app.use("/api/cart", cartRoutes);
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/products', require('./routes/productRoutes'));
 
 
 const PORT = process.env.PORT || 5000;
