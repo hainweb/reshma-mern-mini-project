@@ -22,40 +22,21 @@ function App() {
       {/* Header */}
       <Navbar />
 
-      {/* Main Routes */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/products" element={<ProductsPage />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    <Routes>
+  <Route path="/" element={<Home />} />
+  <Route path="/products" element={<ProductsPage />} />
+  <Route path="/cart" element={<Cart />} />
+  <Route path="/login" element={<Login />} />
+  <Route path="/register" element={<Register />} />
 
-        {/* Admin Protected Routes */}
-        <Route
-          path="/admin"
-          element={
-            <AdminRoute>
-              <AdminDashboard />
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/add-product"
-          element={
-            <AdminRoute>
-              <AddProduct />
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/edit-product/:id"
-          element={
-            <AdminRoute>
-              <EditProduct />
-            </AdminRoute>
-          }
-        />
-      </Routes>
+  {/* Admin Protected Routes */}
+  <Route element={<AdminRoute />}>
+    <Route path="/admin" element={<AdminDashboard />} />
+    <Route path="/admin/add-product" element={<AddProduct />} />
+    <Route path="/admin/edit-product/:id" element={<EditProduct />} />
+  </Route>
+</Routes>
+
 
       {/* Footer */}
       <Footer />

@@ -1,12 +1,13 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAdmin } from "../../components/context/AdminContext";
 
-const AdminRoute = ({ children }) => {
+const AdminRoute = () => {
   const { isAdmin, loading } = useAdmin();
 
   if (loading) return <p>Loading...</p>;
+  if (!isAdmin) return <Navigate to="/login" />; // redirect if not admin
 
-  return isAdmin ? children : <Navigate to="/login" replace />;
+  return <Outlet />; // render nested routes if admin
 };
 
 export default AdminRoute;

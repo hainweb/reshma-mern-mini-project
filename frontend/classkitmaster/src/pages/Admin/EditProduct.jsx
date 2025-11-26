@@ -9,6 +9,7 @@ const EditProduct = () => {
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const load = async () => {
@@ -19,6 +20,9 @@ const EditProduct = () => {
         setCategory(res.data.category);
       } catch (err) {
         console.error(err);
+        alert("Failed to load product data.");
+      } finally {
+        setLoading(false);
       }
     };
     load();
@@ -26,6 +30,14 @@ const EditProduct = () => {
 
   const submit = async (e) => {
     e.preventDefault();
+
+    const token = localStorage.getItem("adminToken") || localStorage.getItem("token");
+    if (!token) {
+      alert("You are not authorized. Please log in as admin.");
+      navigate("/login");
+      return;
+    }
+
     try {
       const fd = new FormData();
       fd.append("name", name);
@@ -33,19 +45,27 @@ const EditProduct = () => {
       fd.append("category", category);
       if (image) fd.append("image", image);
 
-      await API.put(`/products/update/${id}`, fd, {
+      await API.put(`/products/${id}`, fd, {
         headers: {
           "Content-Type": "multipart/form-data",
-          "x-auth-token": localStorage.getItem("token"),
+          "x-auth-token": token,
         },
       });
 
+      alert("Product updated successfully!");
       navigate("/admin");
     } catch (err) {
       console.error(err);
-      alert("Update failed");
+      if (err.response?.status === 401) {
+        alert("Unauthorized. Please log in again.");
+        navigate("/login");
+      } else {
+        alert("Update failed. Please try again.");
+      }
     }
   };
+
+  if (loading) return <p className="text-center py-8">Loading product data...</p>;
 
   return (
     <div className="flex justify-center px-4 py-8">
