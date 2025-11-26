@@ -1,24 +1,28 @@
 import React from "react";
 import { Toaster } from "react-hot-toast";
-
 import { Routes, Route } from "react-router-dom";
-import Home from "./components/Home";
-import ProductsPage from "./components/ProductsPage";
-import Cart from "./components/Cart";
+
+import Home from "./pages/UserViewPage/Home";
+import ProductsPage from "./pages/UserViewPage/ProductsPage";
+import Cart from "./pages/UserViewPage/Cart";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import AddProduct from "./pages/Admin/AddProduct";
 import EditProduct from "./pages/Admin/EditProduct";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/Layout/Navbar";
 import AdminRoute from "./pages/Admin/AdminRoute";
+import Footer from "./components/Layout/Footer";
+
 function App() {
   return (
-
     <div className="min-h-screen bg-gray-100">
-                <Toaster position="top-center" />
+      <Toaster position="top-center" />
 
+      {/* Header */}
       <Navbar />
+
+      {/* Main Routes */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<ProductsPage />} />
@@ -35,7 +39,6 @@ function App() {
             </AdminRoute>
           }
         />
-
         <Route
           path="/admin/add-product"
           element={
@@ -44,7 +47,6 @@ function App() {
             </AdminRoute>
           }
         />
-
         <Route
           path="/admin/edit-product/:id"
           element={
@@ -54,6 +56,9 @@ function App() {
           }
         />
       </Routes>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

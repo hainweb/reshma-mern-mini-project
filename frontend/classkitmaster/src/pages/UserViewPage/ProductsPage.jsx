@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import API from "../services/api";
+import API from "../../services/api";
 import { Link } from "react-router-dom";
 
 const ProductsPage = () => {
@@ -34,12 +34,16 @@ const displayed = filtered.slice((page-1)*PER_PAGE, page*PER_PAGE);
         <input className="border p-2 rounded flex-1" placeholder="Search..." value={search} onChange={e=>setSearch(e.target.value)} />
         <select className="border p-2 rounded" value={category} onChange={e=>setCategory(e.target.value)}>
           <option value="">All Categories</option>
+          <option value="bag">Bag</option>
+          <option value="bag">Bottle</option>
+          <option value="bag">Cryons</option>
+          <option value="bag">Toys</option>
           {[...new Set(products.map(p=>p.category))].map(c=> <option key={c} value={c}>{c}</option>)}
         </select>
         <select className="border p-2 rounded" value={sort} onChange={e=>setSort(e.target.value)}>
-          <option value="">Sort</option>
-          <option value="low">Price Low→High</option>
-          <option value="high">Price High→Low</option>
+          <option value="">Price</option>
+          <option value="low">Low→High</option>
+          <option value="high">High→Low</option>
         </select>
       </div>
 

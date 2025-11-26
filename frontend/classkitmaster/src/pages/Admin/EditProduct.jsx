@@ -32,7 +32,14 @@ const EditProduct = () => {
       fd.append("price", price);
       fd.append("category", category);
       if (image) fd.append("image", image);
-      await API.put(`/products/update/${id}`, fd, { headers: { "Content-Type": "multipart/form-data","x-auth-token": localStorage.getItem("token") } });
+
+      await API.put(`/products/update/${id}`, fd, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "x-auth-token": localStorage.getItem("token"),
+        },
+      });
+
       navigate("/admin");
     } catch (err) {
       console.error(err);
@@ -41,14 +48,40 @@ const EditProduct = () => {
   };
 
   return (
-    <form onSubmit={submit} className="max-w-md bg-white p-6 rounded shadow">
-      <h2 className="text-xl mb-4">Edit Product</h2>
-      <input className="border p-2 rounded w-full mb-3" placeholder="Name" value={name} onChange={e=>setName(e.target.value)} />
-      <input className="border p-2 rounded w-full mb-3" placeholder="Price" type="number" value={price} onChange={e=>setPrice(e.target.value)} />
-      <input className="border p-2 rounded w-full mb-3" placeholder="Category" value={category} onChange={e=>setCategory(e.target.value)} />
-      <input type="file" onChange={e=>setImage(e.target.files[0])} className="mb-3" />
-      <button className="bg-blue-600 text-white px-4 py-2 rounded w-full">Update</button>
-    </form>
+    <div className="flex justify-center px-4 py-8">
+      <form
+        onSubmit={submit}
+        className="w-full max-w-lg bg-white rounded-2xl shadow-lg p-6 border border-purple-300"
+      >
+        <h2 className="text-2xl font-bold mb-4 text-purple-700">Edit Product</h2>
+
+        <input
+          className="input"
+          placeholder="Product Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+
+        <input
+          className="input"
+          placeholder="Price"
+          type="number"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
+
+        <input
+          className="input"
+          placeholder="Category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+        />
+
+        <input type="file" onChange={(e) => setImage(e.target.files[0])} className="mb-3" />
+
+        <button className="btn-yellow w-full">Update Product</button>
+      </form>
+    </div>
   );
 };
 

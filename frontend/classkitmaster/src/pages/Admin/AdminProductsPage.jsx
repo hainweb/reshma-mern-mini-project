@@ -7,39 +7,47 @@ const AdminProductsPage = () => {
   const navigate = useNavigate();
 
   const fetchProducts = async () => {
-    try {
-      const res = await API.get("/products");
-      setProducts(res.data);
-    } catch (err) {
-      console.error(err);
-    }
+    const res = await API.get("/products");
+    setProducts(res.data);
   };
 
   useEffect(() => { fetchProducts(); }, []);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete?")) return;
-    try {
-      await API.delete(`/products/delete/${id}`);
-      fetchProducts();
-    } catch (err) {
-      console.error(err);
-      alert("Delete failed");
-    }
+    await API.delete(`/products/delete/${id}`);
+    fetchProducts();
   };
 
   return (
-    <div>
-      <h2 className="text-lg font-semibold mb-3">Products</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {products.map(p => (
-          <div key={p._id} className="border p-3 rounded">
-            <img src={p.image ? `http://localhost:5000${p.image}` : "https://via.placeholder.com/300"} className="h-40 w-full object-cover rounded mb-2" alt={p.name}/>
-            <h3 className="font-bold">{p.name}</h3>
-            <p>₹{p.price}</p>
-            <div className="mt-2 flex gap-2">
-              <button onClick={()=>navigate(`edit-product/${p._id}`)} className="px-2 py-1 bg-yellow-400 rounded">Edit</button>
-              <button onClick={()=>handleDelete(p._id)} className="px-2 py-1 bg-red-500 text-white rounded">Delete</button>
+    <div className="p-6">
+      <h2 className="text-3xl font-bold text-purple-700 mb-5">All Products</h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {products.map((p) => (
+          <div key={p._id} className="card">
+            <img
+              src={p.image ? `http://localhost:5000${p.image}` : "https://via.placeholder.com/300"}
+              className="h-48 w-full object-cover rounded-xl"
+            />
+
+            <h3 className="font-bold text-lg mt-3">{p.name}</h3>
+            <p className="text-purple-600 font-semibold">₹{p.price}</p>
+
+            <div className="mt-3 flex gap-2">
+              <button
+                onClick={() => navigate(`edit-product/${p._id}`)}
+                className="btn-yellow flex-1"
+              >
+                Edit
+              </button>
+
+              <button
+                onClick={() => handleDelete(p._id)}
+                className="bg-red-500 text-white rounded-lg px-4 py-2 flex-1 hover:bg-red-600"
+              >
+                Delete
+              </button>
             </div>
           </div>
         ))}
