@@ -39,7 +39,7 @@ router.post("/", auth, admin, upload.single("image"), async (req, res) => {
 });
 
 /* ---------------------- UPDATE PRODUCT (ADMIN) ---------------------- */
-router.put("/:id", auth, admin, upload.single("image"), async (req, res) => {
+router.put("/products/:id", auth, admin, upload.single("image"), async (req, res) => {
   try {
     const { name, description, price, category } = req.body;
 

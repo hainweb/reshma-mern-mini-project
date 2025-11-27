@@ -26,7 +26,8 @@ const ProductCard = ({ product, onAddToCart }) => {
 
         {/* VIEW BUTTON */}
         <button
-          onClick={() => navigate(`/products/${product._id}`)}
+          onClick={() => navigate(`/product/${product._id}`)
+}
           className="flex-1 px-4 py-2 rounded-lg border border-purple-600 text-purple-600 font-medium 
           hover:bg-purple-600 hover:text-white transition duration-300"
         >

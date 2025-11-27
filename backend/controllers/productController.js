@@ -1,28 +1,7 @@
-const Product = require("../models/Product");
+const Product = require("../models/product");
 
 // ADD Product
-exports.addProduct = async (req, res) => {
-  try {
-    const { name, price, category } = req.body;
-
-    if (!req.file) {
-      return res.status(400).json({ message: "Image is required" });
-    }
-
-    const newProduct = new Product({
-      name,
-      price,
-      category,
-      image: req.file.path,
-    });
-
-    const saved = await newProduct.save();
-    res.json(saved);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
+description
 // GET All Products
 exports.getProducts = async (req, res) => {
   try {
@@ -46,20 +25,36 @@ exports.getProducts = async (req, res) => {
 // UPDATE Product
 exports.updateProduct = async (req, res) => {
   try {
-    const { name, price, category } = req.body;
+    const { name, price, category ,description } = req.body;
 
-    const updateData = { name, price, category };
-    if (req.file) updateData.image = req.file.path;
+    // Data to update
+    let updateData = {
+      name,
+      price,
+      category,
+      description,
+    };
 
-    const updated = await Product.findByIdAndUpdate(
+    // If new image uploaded
+    if (req.file) {
+      updateData.image = req.file.filename; // or req.file.path
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       updateData,
       { new: true }
     );
 
-    res.json(updated);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    if (!updatedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.json(updatedProduct);
+
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: "Update failed" });
   }
 };
 

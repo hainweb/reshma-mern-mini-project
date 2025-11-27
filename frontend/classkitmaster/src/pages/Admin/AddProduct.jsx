@@ -22,22 +22,22 @@ const [description, setDescription] = useState("");
 
     try {
       const fd = new FormData();
-      fd.append("name", name.trim());
-      fd.append("price", Number(price));
-      fd.append("category", category.trim());
-      fd.append("description", description.trim());
+     fd.append("name", name.trim());
+fd.append("price", Number(price));
+fd.append("category", category.trim());
+fd.append("description", description.trim());
+if (image) fd.append("image", image);
 
-      if (image) fd.append("image", image);
 
       // Debug FormData
       for (let pair of fd.entries()) console.log(pair[0], pair[1]);
-
-     await API.post("/products", fd, {
+await API.post("/products", fd, {
   headers: {
     Authorization: `Bearer ${token}`,
     "Content-Type": "multipart/form-data",
   },
 });
+
 
 
       alert("Product added successfully!");
