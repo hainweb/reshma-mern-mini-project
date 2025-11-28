@@ -1,57 +1,33 @@
 import React, { useState } from "react";
-import API from "../../services/api"; // axios instance
 import { useNavigate } from "react-router-dom";
+import API from "../../services/api";
 
 const AddProduct = () => {
-  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
-const [description, setDescription] = useState("");
+  const navigate = useNavigate();
 
-  const submit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const token = localStorage.getItem("adminToken") || localStorage.getItem("token");
-    if (!token) {
-      alert("You are not authorized. Please log in as admin.");
-      navigate("/login");
-      return;
-    }
-
     try {
-      const fd = new FormData();
-     fd.append("name", name.trim());
-fd.append("price", Number(price));
-fd.append("category", category.trim());
-fd.append("description", description.trim());
-if (image) fd.append("image", image);
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("price", price);
+      formData.append("category", category);
+      formData.append("description", description);
+      formData.append("image", image);
 
-
-      // Debug FormData
-      for (let pair of fd.entries()) console.log(pair[0], pair[1]);
-await API.post("/products", fd, {
-  headers: {
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "multipart/form-data",
-  },
-});
-
-
-
-      alert("Product added successfully!");
-      navigate("/admin");
+      await API.post("/products", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      alert("Product added");
+      navigate("/admin/products");
     } catch (err) {
       console.error(err);
-      if (err.response?.status === 401) {
-        alert("Unauthorized. Please log in again.");
-        navigate("/login");
-      } else if (err.response?.status === 404) {
-        alert("API endpoint not found. Check your backend route.");
-      } else {
-        alert("Failed to add product. Please check input and try again.");
-      }
+      alert(err.response?.data?.message || "Add product failed");
     }
   };
 

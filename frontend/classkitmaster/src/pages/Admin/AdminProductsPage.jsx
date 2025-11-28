@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import API from "../../services/api";
 import { useNavigate } from "react-router-dom";
+import API from "../../services/api";
 
 const AdminProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -8,14 +8,14 @@ const AdminProductsPage = () => {
 
   const fetchProducts = async () => {
     const res = await API.get("/products");
-    setProducts(res.data);
+    setProducts(res.data.items || res.data);
   };
 
   useEffect(() => { fetchProducts(); }, []);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete?")) return;
-    await API.delete(`/products/delete/${id}`);
+    await API.delete(`/products/${id}`);
     fetchProducts();
   };
 

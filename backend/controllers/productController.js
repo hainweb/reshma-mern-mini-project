@@ -1,69 +1,44 @@
-const Product = require("../models/product");
+const Product = require("../models/Product");
 
-// ADD Product
-description
-// GET All Products
-exports.getProducts = async (req, res) => {
+exports.addProduct = async (req, res) => {
+  try {
+    const { name, price, category, description } = req.body;
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
+    const product = new Product({ name, price, category, description, image });
+    await product.save();
+    res.json({ product });
+  } catch (err) { res.status(500).json({ message: err.message }); }
+};
+
+exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.find().sort({ createdAt: -1 });
     res.json(products);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+  } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
-// FIXED — GET product by ID
-exports.getProducts = async (req, res) => {
+exports.getProduct = async (req, res) => {
   try {
-    const products = await Product.find();
-    res.json(products);
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: "Not found" });
+    res.json({ product });
+  } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
-// UPDATE Product
 exports.updateProduct = async (req, res) => {
   try {
-    const { name, price, category ,description } = req.body;
+    const { name, price, category, description } = req.body;
+    const data = { name, price, category, description };
+    if (req.file) data.image = `/uploads/${req.file.filename}`;
 
-    // Data to update
-    let updateData = {
-      name,
-      price,
-      category,
-      description,
-    };
-
-    // If new image uploaded
-    if (req.file) {
-      updateData.image = req.file.filename; // or req.file.path
-    }
-
-    const updatedProduct = await Product.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true }
-    );
-
-    if (!updatedProduct) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-
-    res.json(updatedProduct);
-
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ message: "Update failed" });
-  }
+    const updated = await Product.findByIdAndUpdate(req.params.id, data, { new: true });
+    res.json({ product: updated });
+  } catch (err) { res.status(500).json({ message: err.message }); }
 };
 
-// DELETE
 exports.deleteProduct = async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
-    res.json({ message: "Product deleted" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ message: err.message }); }
 };

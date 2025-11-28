@@ -1,37 +1,55 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../../services/api";
+import ProductCard from "../../components/ProductCard";
+import Pagination from "../../components/Pagination";
+import { useCart } from "../../components/context/CartContext";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
+  const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("");
-  const [page, setPage] = useState(1);
   const PER_PAGE = 6;
+  const { cart, setCart } = useCart();
+
+  const fetchProducts = async () => {
+    const res = await API.get("/products");
+    setProducts(res.data.items || res.data);
+  };
 
   useEffect(() => {
-  const load = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/api/products");
-      console.log("API Response:", res.data);
-      setProducts(res.data.items || []);  // ← use items array
-    } catch (err) {
-      console.log("Axios Error:", err);
-      setProducts([]);
+    fetchProducts();
+  }, []);
+
+  const addToCart = (product) => {
+    const existing = cart.find((p) => p._id === product._id);
+    if (existing) {
+      setCart(
+        cart.map((p) =>
+          p._id === product._id ? { ...p, qty: p.qty + 1 } : p
+        )
+      );
+    } else {
+      setCart([...cart, { ...product, qty: 1 }]);
     }
   };
-  load();
-}, []);
 
+  const filteredProducts = products
+    .filter((p) =>
+      p.name.toLowerCase().includes(search.toLowerCase())
+    )
+    .filter((p) => (category ? p.category === category : true))
+    .sort((a, b) => {
+      if (sort === "low") return a.price - b.price;
+      if (sort === "high") return b.price - a.price;
+      return 0;
+    });
 
-  let filtered = Array.isArray(products) ? products.filter(p => p.name.toLowerCase().includes(search.toLowerCase())) : [];
-  if (category) filtered = filtered.filter(p => p.category === category);
-  if (sort === "low") filtered.sort((a,b)=>a.price-b.price);
-  if (sort === "high") filtered.sort((a,b)=>b.price-a.price);
-
-  const totalPages = Math.ceil(filtered.length / PER_PAGE);
-  const displayed = filtered.slice((page-1)*PER_PAGE, page*PER_PAGE);
+  const totalPages = Math.ceil(filteredProducts.length / PER_PAGE);
+  const displayed = filteredProducts.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   return (
     <div>
@@ -62,9 +80,11 @@ const ProductsPage = () => {
       </div>
 
       <div className="flex gap-2 justify-center mt-6">
-        {Array.from({length: totalPages}, (_,i)=>i+1).map(n=>(
-          <button key={n} onClick={()=>setPage(n)} className={`px-3 py-1 rounded ${page===n ? "bg-blue-600 text-white":"bg-gray-200"}`}>{n}</button>
-        ))}
+        <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
       </div>
     </div>
   );

@@ -3,20 +3,16 @@ import { Link } from "react-router-dom";
 import API from "../../services/api";
 
 const AdminDashboard = () => {
-  const [products, setProducts] = useState([]); // array of products
-  const [loading, setLoading] = useState(true); // loading state
-  const [error, setError] = useState(null);     // error state
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch products from API
   const fetchProducts = async () => {
     try {
       setLoading(true);
       const res = await API.get("/products");
-      // Use items array from backend response
-      setProducts(res.data.items || []);
+      setProducts(res.data.items || res.data);
     } catch (err) {
       console.error(err);
-      setError("Failed to fetch products");
     } finally {
       setLoading(false);
     }
@@ -26,15 +22,10 @@ const AdminDashboard = () => {
     fetchProducts();
   }, []);
 
-  // Delete a product
   const deleteProduct = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
-
+    if (!window.confirm("Delete this product?")) return;
     try {
-      await API.delete(`/products/${id}`, {
-        headers: { "x-auth-token": localStorage.getItem("adminToken") },
-      });
-      // Refresh products after deletion
+      await API.delete(`/products/${id}`);
       fetchProducts();
     } catch (err) {
       console.error(err);
