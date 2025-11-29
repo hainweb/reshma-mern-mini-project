@@ -1,7 +1,7 @@
 import React from "react";
-import Banner from "../../components/Layout/Banner";
-
-const categories = ["Books", "Uniforms", "Bags", "Stationery"];
+import Banner from "./Banner";
+import ProductsPage from "../../pages/ProductsPage"
+const categories = ["Bottle", "Bag", "Toy", "Cryons"];
 
 const Home = () => {
   return (
@@ -26,6 +26,7 @@ const Home = () => {
             {categories.map((cat, i) => (
               <button
                 key={i}
+                  onClick={() => setCategory(cat)} 
                 className="bg-purple-700 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-purple-600 hover:scale-110 transition duration-300"
               >
                 {cat}
@@ -36,6 +37,7 @@ const Home = () => {
         </div>
 
       </div>
+              <ProductsPage/>
 
     </div>
   );

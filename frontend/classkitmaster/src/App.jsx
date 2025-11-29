@@ -2,17 +2,17 @@ import React from "react";
 import { Toaster } from "react-hot-toast";
 import { Routes, Route } from "react-router-dom";
 
-import Home from "./pages/UserViewPage/Home";
-import ProductsPage from "./pages/UserViewPage/ProductsPage";
-import Cart from "./pages/UserViewPage/Cart";
-import Login from "./pages/Auth/Login";
-import Register from "./pages/Auth/Register";
-import AdminDashboard from "./pages/Admin/AdminDashboard";
-import AddProduct from "./pages/Admin/AddProduct";
-import EditProduct from "./pages/Admin/EditProduct";
+import Home from "./components/Layout/Home";
 import Navbar from "./components/Layout/Navbar";
-import AdminRoute from "./pages/Admin/AdminRoute";
 import Footer from "./components/Layout/Footer";
+
+import ProductsPage from "./pages/ProductsPage";
+import Cart from "./pages/Cart";
+import ProductDetails from "./pages/ProductDetails";
+
+import AdminAddProduct from "./pages/Admin/AdminAddProduct";
+import AdminEditPage from "./pages/Admin/AdminEditPage";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
 
 function App() {
   return (
@@ -22,21 +22,17 @@ function App() {
       {/* Header */}
       <Navbar />
 
-    <Routes>
-  <Route path="/" element={<Home />} />
-  <Route path="/products" element={<ProductsPage />} />
-  <Route path="/cart" element={<Cart />} />
-  <Route path="/login" element={<Login />} />
-  <Route path="/register" element={<Register />} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/cart" element={<Cart />} />
 
-  {/* Admin Protected Routes */}
-  <Route element={<AdminRoute />}>
-    <Route path="/admin" element={<AdminDashboard />} />
-    <Route path="/admin/add-product" element={<AddProduct />} />
-    <Route path="/admin/edit-product/:id" element={<EditProduct />} />
-  </Route>
-</Routes>
-
+        {/*adminDashBoard*/}
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/add-product" element={<AdminAddProduct />} />
+        <Route path="/admin/edit-product/:id" element={<AdminEditPage />} />
+      </Routes>
 
       {/* Footer */}
       <Footer />

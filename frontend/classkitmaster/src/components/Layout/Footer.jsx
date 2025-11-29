@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaChevronDown } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaChevronDown,
+} from "react-icons/fa";
 
 function Footer() {
   const [openLinks, setOpenLinks] = useState(false);
@@ -7,16 +12,14 @@ function Footer() {
   return (
     <footer className="bg-purple-900 text-gray-200 pt-14 pb-8 mt-10">
       <div className="max-w-7xl mx-auto px-6">
-
         {/* TOP SECTION */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-
           {/* Logo + About */}
           <div>
             {/* School-Themed Logo */}
             <div className="flex items-center space-x-3">
               <img
-                src="/logo.png"       // Replace with your logo path
+                src="/logo.jpg"
                 alt="ClassKit Logo"
                 className="w-12 h-12 rounded-full shadow-lg hover:scale-110 duration-300"
               />
@@ -25,7 +28,8 @@ function Footer() {
 
             <p className="mt-4 text-gray-300 leading-relaxed">
               ClassKit Master by ESO provides school study materials, uniforms,
-              and essential learning supplies backed by years of trusted service.
+              and essential learning supplies backed by years of trusted
+              service.
             </p>
 
             {/* Social Icons */}
@@ -124,7 +128,6 @@ function Footer() {
               ))}
             </ul>
           </div>
-
         </div>
 
         {/* Bottom Bar */}

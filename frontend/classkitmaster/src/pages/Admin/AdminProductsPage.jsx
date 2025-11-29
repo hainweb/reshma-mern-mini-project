@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../../services/api";
+import axios from "axios";
 
 const AdminProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -11,7 +12,9 @@ const AdminProductsPage = () => {
     setProducts(res.data.items || res.data);
   };
 
-  useEffect(() => { fetchProducts(); }, []);
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete?")) return;
@@ -27,7 +30,11 @@ const AdminProductsPage = () => {
         {products.map((p) => (
           <div key={p._id} className="card">
             <img
-              src={p.image ? `http://localhost:5000${p.image}` : "https://via.placeholder.com/300"}
+              src={
+                p.image
+                  ? `http://localhost:5000${p.image}`
+                  : "https://via.placeholder.com/300"
+              }
               className="h-48 w-full object-cover rounded-xl"
             />
 
